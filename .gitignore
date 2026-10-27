@@ -6,3 +6,6 @@ next-env.d.ts
 
 # Commercial recordings stay local; only a licensed public/music.mp3 should be committed
 public/Edd_Sheeran_*
+
+# Local settings
+.env*.local

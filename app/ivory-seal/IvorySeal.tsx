@@ -18,6 +18,9 @@ const playball = Playball({ weight: "400", subsets: ["latin"] });
 // Clean sans-serif for the order-of-the-day timeline
 const sans = Poppins({ weight: ["400", "500", "600"], subsets: ["latin"] });
 
+// NEXT_PUBLIC_MUSIC_SRC (set in the git-ignored .env.local) overrides the song on one machine
+const musicSrc = encodeURI(process.env.NEXT_PUBLIC_MUSIC_SRC || "/music.mp3");
+
 const monogram = `${invite.bride[0]}&${invite.groom[0]}`;
 
 export default function IvorySeal() {
@@ -56,8 +59,8 @@ export default function IvorySeal() {
 
   return (
     <div className={`iv ${cursive.variable}`}>
-      {/* Background song: save an mp3 you have the rights to as public/music.mp3 */}
-      <audio ref={audioRef} src="/music.mp3" loop preload="auto" onCanPlay={() => setHasMusic(true)} />
+      {/* Background song: public/music.mp3, or a local-only file set in .env.local */}
+      <audio ref={audioRef} src={musicSrc} loop preload="auto" onCanPlay={() => setHasMusic(true)} />
 
       {stage !== "open" &&
         (videoFailed ? (

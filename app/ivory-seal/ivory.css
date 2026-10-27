@@ -44,6 +44,15 @@
   pointer-events: none;
   text-shadow: 0 1px 10px rgba(255, 255, 255, 0.9);
 }
+/* Darker intro text so it stands out on the pale envelope */
+.iv-intro-overlay .iv-gate-label {
+  color: #3b2a14;
+  font-weight: 500;
+}
+.iv-intro-overlay .iv-gate-tap {
+  color: #5e3f0e;
+  font-weight: 600;
+}
 .iv-intro-skip {
   position: absolute;
   top: 20px;
