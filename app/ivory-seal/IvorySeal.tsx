@@ -28,6 +28,7 @@ export default function IvorySeal() {
   const [videoFailed, setVideoFailed] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
+  const musicStarted = useRef(false);
 
   // Music is on by default; this flips to false only when the guest turns it off
   const musicWanted = useRef(true);
@@ -38,7 +39,13 @@ export default function IvorySeal() {
     if (!a) return;
     // Mobile browsers may drop a failed preload; reload before trying again
     if (a.error || a.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) a.load();
-    a.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    if (!musicStarted.current) a.currentTime = 0;
+    a.play()
+      .then(() => {
+        musicStarted.current = true;
+        setPlaying(true);
+      })
+      .catch(() => setPlaying(false));
   };
 
   const toggleMusic = () => {
@@ -68,6 +75,10 @@ export default function IvorySeal() {
     return () => window.removeEventListener("click", retry);
   }, [stage, playing]);
 
+  useEffect(() => {
+    startMusic();
+  }, []);
+
   // CSS seal fallback, used only if the intro video can't play
   const breakSeal = () => {
     if (stage !== "sealed") return;
@@ -82,8 +93,8 @@ export default function IvorySeal() {
 
   return (
     <div className={`iv ${cursive.variable}`}>
-      {/* Background song: public/music.mp3, or a local-only file set in .env.local */}
-      <audio ref={audioRef} src={musicSrc} loop preload="auto" />
+      {/* Background song: public/bg.mp3, or a local-only file set in .env.local */}
+      <audio ref={audioRef} src={musicSrc} loop preload="auto" autoPlay />
 
       {stage !== "open" &&
         (videoFailed ? (

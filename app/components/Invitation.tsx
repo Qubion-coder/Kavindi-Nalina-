@@ -18,6 +18,10 @@ export default function Invitation() {
     audioRef.current?.play().then(() => setPlaying(true)).catch(() => {});
   };
 
+  useEffect(() => {
+    startMusic();
+  }, []);
+
   // CSS envelope fallback, used only if the intro video can't play
   const open = () => {
     if (stage !== "closed") return;
@@ -48,8 +52,8 @@ export default function Invitation() {
 
   return (
     <>
-      {/* Drop an mp3 at public/music.mp3 to enable background music */}
-      <audio ref={audioRef} src="/music.mp3" loop preload="auto" onCanPlay={() => setHasMusic(true)} />
+      {/* Background song from public/bg.mp3 */}
+      <audio ref={audioRef} src="/bg.mp3" loop preload="auto" autoPlay onCanPlay={() => setHasMusic(true)} />
 
       {stage !== "open" &&
         (videoFailed ? (
