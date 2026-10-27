@@ -34,7 +34,11 @@ export default function IvorySeal() {
 
   // Opening the invitation is a tap, so browsers allow the music to start here
   const startMusic = () => {
-    audioRef.current?.play().then(() => setPlaying(true)).catch(() => {});
+    const a = audioRef.current;
+    if (!a) return;
+    // Mobile browsers may drop a failed preload; reload before trying again
+    if (a.error || a.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) a.load();
+    a.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
   };
 
   const toggleMusic = () => {
@@ -50,12 +54,18 @@ export default function IvorySeal() {
     }
   };
 
-  // If the browser blocked the first play, start on the guest's next tap anywhere
+  // If the browser blocked the first play, start on the guest's next tap anywhere.
+  // Uses "click" (counts as a play gesture on iPhone, unlike pointerdown) and skips
+  // taps on the music button, which handles itself — otherwise one tap would start
+  // the song here and the button's own click would immediately pause it again.
   useEffect(() => {
     if (stage !== "open" || playing) return;
-    const retry = () => musicWanted.current && startMusic();
-    window.addEventListener("pointerdown", retry, { once: true });
-    return () => window.removeEventListener("pointerdown", retry);
+    const retry = (e: MouseEvent) => {
+      if ((e.target as Element | null)?.closest(".iv-music")) return;
+      if (musicWanted.current) startMusic();
+    };
+    window.addEventListener("click", retry);
+    return () => window.removeEventListener("click", retry);
   }, [stage, playing]);
 
   // CSS seal fallback, used only if the intro video can't play
