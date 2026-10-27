@@ -52,8 +52,8 @@ export default function Invitation() {
 
   return (
     <>
-      {/* Background song from public/bg.mp3 */}
-      <audio ref={audioRef} src="/bg.mp3" loop preload="auto" autoPlay onCanPlay={() => setHasMusic(true)} />
+      {/* Background song from public/song.mp3 */}
+      <audio ref={audioRef} src="/song.mp3" loop preload="auto" autoPlay onCanPlay={() => setHasMusic(true)} />
 
       {stage !== "open" &&
         (videoFailed ? (

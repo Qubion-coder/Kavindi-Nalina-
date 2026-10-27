@@ -18,8 +18,8 @@ const playball = Playball({ weight: "400", subsets: ["latin"] });
 // Clean sans-serif for the order-of-the-day timeline
 const sans = Poppins({ weight: ["400", "500", "600"], subsets: ["latin"] });
 
-// Background song lives at public/bg.mp3; NEXT_PUBLIC_MUSIC_SRC in .env.local can override it
-const musicSrc = encodeURI(process.env.NEXT_PUBLIC_MUSIC_SRC || "/bg.mp3");
+// Background song lives at public/song.mp3; NEXT_PUBLIC_MUSIC_SRC in .env.local can override it
+const musicSrc = encodeURI(process.env.NEXT_PUBLIC_MUSIC_SRC || "/song.mp3");
 
 const monogram = `${invite.bride[0]}&${invite.groom[0]}`;
 
@@ -93,7 +93,7 @@ export default function IvorySeal() {
 
   return (
     <div className={`iv ${cursive.variable}`}>
-      {/* Background song: public/bg.mp3, or a local-only file set in .env.local */}
+      {/* Background song: public/song.mp3, or a local-only file set in .env.local */}
       <audio ref={audioRef} src={musicSrc} loop preload="auto" autoPlay />
 
       {stage !== "open" &&
