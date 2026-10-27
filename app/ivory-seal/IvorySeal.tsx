@@ -27,7 +27,6 @@ export default function IvorySeal() {
   const [stage, setStage] = useState<Stage>("sealed");
   const [videoFailed, setVideoFailed] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [hasMusic, setHasMusic] = useState(false);
   const [playing, setPlaying] = useState(false);
 
   // Music is on by default; this flips to false only when the guest turns it off
@@ -53,11 +52,11 @@ export default function IvorySeal() {
 
   // If the browser blocked the first play, start on the guest's next tap anywhere
   useEffect(() => {
-    if (stage !== "open" || playing || !hasMusic) return;
+    if (stage !== "open" || playing) return;
     const retry = () => musicWanted.current && startMusic();
     window.addEventListener("pointerdown", retry, { once: true });
     return () => window.removeEventListener("pointerdown", retry);
-  }, [stage, playing, hasMusic]);
+  }, [stage, playing]);
 
   // CSS seal fallback, used only if the intro video can't play
   const breakSeal = () => {
@@ -74,7 +73,7 @@ export default function IvorySeal() {
   return (
     <div className={`iv ${cursive.variable}`}>
       {/* Background song: public/music.mp3, or a local-only file set in .env.local */}
-      <audio ref={audioRef} src={musicSrc} loop preload="auto" onCanPlay={() => setHasMusic(true)} />
+      <audio ref={audioRef} src={musicSrc} loop preload="auto" />
 
       {stage !== "open" &&
         (videoFailed ? (
@@ -106,7 +105,8 @@ export default function IvorySeal() {
         <Footer />
       </main>
 
-      {stage === "open" && hasMusic && (
+      {/* Always shown after the intro; it stays "off" if the song file can't load */}
+      {stage === "open" && (
         <button
           className={`iv-music ${playing ? "is-playing" : ""}`}
           onClick={toggleMusic}
