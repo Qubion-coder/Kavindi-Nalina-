@@ -4,7 +4,9 @@ out
 next-env.d.ts
 *.tsbuildinfo
 
-# Commercial recordings stay local; only a licensed public/music.mp3 should be committed
+# Commercial recordings stay local. public/bg.mp3 is currently Ed Sheeran "Perfect";
+# remove the bg.mp3 line once it is replaced with a song you have the rights to
+public/bg.mp3
 public/Edd_Sheeran_*
 
 # Local settings

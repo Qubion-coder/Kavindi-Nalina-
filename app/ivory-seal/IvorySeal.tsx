@@ -18,8 +18,8 @@ const playball = Playball({ weight: "400", subsets: ["latin"] });
 // Clean sans-serif for the order-of-the-day timeline
 const sans = Poppins({ weight: ["400", "500", "600"], subsets: ["latin"] });
 
-// NEXT_PUBLIC_MUSIC_SRC (set in the git-ignored .env.local) overrides the song on one machine
-const musicSrc = encodeURI(process.env.NEXT_PUBLIC_MUSIC_SRC || "/music.mp3");
+// Background song lives at public/bg.mp3; NEXT_PUBLIC_MUSIC_SRC in .env.local can override it
+const musicSrc = encodeURI(process.env.NEXT_PUBLIC_MUSIC_SRC || "/bg.mp3");
 
 const monogram = `${invite.bride[0]}&${invite.groom[0]}`;
 
@@ -30,6 +30,9 @@ export default function IvorySeal() {
   const [hasMusic, setHasMusic] = useState(false);
   const [playing, setPlaying] = useState(false);
 
+  // Music is on by default; this flips to false only when the guest turns it off
+  const musicWanted = useRef(true);
+
   // Opening the invitation is a tap, so browsers allow the music to start here
   const startMusic = () => {
     audioRef.current?.play().then(() => setPlaying(true)).catch(() => {});
@@ -38,12 +41,23 @@ export default function IvorySeal() {
   const toggleMusic = () => {
     const a = audioRef.current;
     if (!a) return;
-    if (a.paused) startMusic();
-    else {
+    if (a.paused) {
+      musicWanted.current = true;
+      startMusic();
+    } else {
+      musicWanted.current = false;
       a.pause();
       setPlaying(false);
     }
   };
+
+  // If the browser blocked the first play, start on the guest's next tap anywhere
+  useEffect(() => {
+    if (stage !== "open" || playing || !hasMusic) return;
+    const retry = () => musicWanted.current && startMusic();
+    window.addEventListener("pointerdown", retry, { once: true });
+    return () => window.removeEventListener("pointerdown", retry);
+  }, [stage, playing, hasMusic]);
 
   // CSS seal fallback, used only if the intro video can't play
   const breakSeal = () => {
