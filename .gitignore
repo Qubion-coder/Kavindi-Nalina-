@@ -3,3 +3,6 @@ node_modules
 out
 next-env.d.ts
 *.tsbuildinfo
+
+# Commercial recordings stay local; only a licensed public/music.mp3 should be committed
+public/Edd_Sheeran_*
