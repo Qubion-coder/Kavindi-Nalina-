@@ -2,6 +2,9 @@
 export const ivory = {
   rsvpBy: "1 December 2026",
 
+  // Background song starts (and loops back to) this many seconds in, skipping the intro
+  musicStartAt: 14,
+
   // The hotel is the headline; the hall is the detail underneath
   venue: { hotel: "ITC Ratnadipa", hall: "Sangam Banquet Hall", city: "Colombo" },
 

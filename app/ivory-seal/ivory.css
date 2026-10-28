@@ -2,10 +2,14 @@
 .iv {
   --iv-bg: #fbf7ef;
   --iv-tint: #f3ecdf;
+  --iv-cream: #f6efe2;
   --iv-card: rgba(255, 253, 249, 0.86);
   --iv-ink: #3b342c;
-  --iv-muted: #8b7f6d;
-  --iv-gold: #b39256;
+  --iv-muted: #7a6a55;
+  --iv-gold: #a8862f;
+  --iv-gold-deep: #8a6a2e;
+  --iv-gold-soft: #c9a45c;
+  --iv-gold-pale: #dcc797;
   --iv-line: #e3d7c1;
   background: var(--iv-bg);
   color: var(--iv-ink);
@@ -46,11 +50,11 @@
 }
 /* Darker intro text so it stands out on the pale envelope */
 .iv-intro-overlay .iv-gate-label {
-  color: #3b2a14;
+  color: var(--iv-ink);
   font-weight: 500;
 }
 .iv-intro-overlay .iv-gate-tap {
-  color: #5e3f0e;
+  color: var(--iv-gold-deep);
   font-weight: 600;
 }
 .iv-intro-skip {
@@ -163,7 +167,7 @@
 .iv-seal-text {
   font-family: var(--font-script), cursive;
   font-size: 46px;
-  fill: #a88b55;
+  fill: var(--iv-gold);
   stroke: #fff;
   stroke-width: 0.6;
 }
@@ -391,7 +395,9 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  color: #860808;
+  /* deep metallic gold; the soft dark edge keeps it readable on the pale sky */
+  color: var(--iv-gold-deep);
+  text-shadow: 0 1px 2px rgba(60, 35, 0, 0.25), 0 0 12px rgba(255, 250, 235, 0.6);
 }
 .iv-hero-names {
   font-weight: 400;
@@ -400,11 +406,10 @@
   white-space: nowrap;
 }
 .iv-hero-tag {
-  margin-bottom: 6px;
   margin-top: 10px;
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
-  color: #c20101;
+  font-weight: 400;
+  font-size: clamp(1.7rem, 7.5vw, 2.1rem);
+  line-height: 1.2;
 }
 .iv-hero-divider {
   display: flex;
@@ -423,12 +428,6 @@
   height: 6px;
   background: currentColor;
   transform: rotate(45deg);
-}
-.iv-hero-date {
-  font-size: 1.05rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Parents section: two white cards joined by a round "&" badge */
@@ -450,7 +449,7 @@
   position: relative;
   overflow: hidden;
   padding: 36px 28px;
-  border: 1px solid #efe4cc;
+  border: 1px solid var(--iv-line);
   border-radius: 16px;
   background: linear-gradient(135deg, rgba(250, 243, 228, 0.6), #fff 60%);
   box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.08);
@@ -465,27 +464,27 @@
   font-weight: 700;
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  color: #c4a66a;
+  color: var(--iv-gold-soft);
 }
 .iv-person-rule {
   display: block;
   width: 48px;
   height: 1px;
   margin: 16px auto;
-  background: #e6d6b3;
+  background: var(--iv-gold-pale);
 }
 .iv-person-parents {
   font-size: 0.8rem;
   line-height: 1.8;
   letter-spacing: 0.12em;
-  color: #57534e;
+  color: var(--iv-ink);
 }
 .iv-person-name {
   margin-top: 24px;
   font-weight: 400;
   font-size: clamp(3.4rem, 15vw, 4.6rem);
   line-height: 1.1;
-  color: #8a6a2e;
+  color: var(--iv-gold-deep);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
   transition: transform 0.7s ease;
 }
@@ -509,8 +508,8 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  border: 4px solid #fdfaf5;
-  background: linear-gradient(135deg, #c9a45c, #8a6a2e);
+  border: 4px solid var(--iv-bg);
+  background: linear-gradient(135deg, var(--iv-gold-soft), var(--iv-gold-deep));
   box-shadow: 0 18px 30px -10px rgba(90, 64, 20, 0.35);
   color: #fff;
   font-size: 1.9rem;
@@ -537,10 +536,10 @@
   }
   .iv-couple-line {
     display: block;
-    background: linear-gradient(to top, #dcc797, transparent);
+    background: linear-gradient(to top, var(--iv-gold-pale), transparent);
   }
   .iv-couple-line:last-child {
-    background: linear-gradient(to bottom, #dcc797, transparent);
+    background: linear-gradient(to bottom, var(--iv-gold-pale), transparent);
   }
   .iv-couple-amp {
     width: 96px;
@@ -614,7 +613,7 @@
 /* Order of the day: no card, sits straight on the background video.
    Dotted centre line, events alternating sides */
 .iv-schedule {
-  --sched-ink: #3d2b14;
+  --sched-ink: var(--iv-ink);
   --sched-icon: 44px;
   max-width: 520px;
   margin: 0 auto;
@@ -661,7 +660,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #fbf7ef; /* hides the dotted line behind the icon */
+  background: var(--iv-bg); /* hides the dotted line behind the icon */
   border: 1.5px solid rgba(61, 43, 20, 0.55);
   color: var(--iv-gold);
   box-shadow: 0 4px 10px -4px rgba(80, 60, 20, 0.25);
@@ -781,8 +780,8 @@
 }
 .iv-choice button.is-on {
   border-color: var(--iv-gold);
-  background: #f6edda;
-  color: #8a6d3b;
+  background: var(--iv-cream);
+  color: var(--iv-gold-deep);
 }
 .iv-stepper {
   display: flex;
@@ -834,14 +833,14 @@
   width: auto;
 }
 .iv-credit a {
-  color: #a8862f;
+  color: var(--iv-gold);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
   transition: color 0.2s;
 }
 .iv-credit a:hover {
-  color: #860808;
+  color: var(--iv-gold-deep);
 }
 
 /* Scroll reveal */
@@ -870,7 +869,7 @@
   font-size: clamp(1.9rem, 8vw, 2.6rem);
   letter-spacing: 0.08em;
   line-height: 1.15;
-  color: #8a6a2e;
+  color: var(--iv-gold-deep);
 }
 .iv-venue-city {
   font-size: 0.75rem;
@@ -914,7 +913,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #c9a45c, #8a6a2e);
+  background: linear-gradient(135deg, var(--iv-gold-soft), var(--iv-gold-deep));
   color: #fff;
   box-shadow: 0 10px 22px -8px rgba(90, 64, 20, 0.55);
   cursor: pointer;
@@ -930,4 +929,276 @@
   50% {
     transform: scale(1.12);
   }
+}
+
+/* Personal welcome right after the hero */
+.iv-welcome {
+  gap: 6px;
+}
+.iv-welcome-line {
+  font-size: clamp(1.15rem, 4.6vw, 1.4rem);
+  line-height: 1.5;
+}
+.iv-welcome-guest {
+  margin: 14px auto;
+  padding: 6px 18px 10px;
+  max-width: 100%;
+  width: auto;
+  font-size: clamp(2.4rem, 11vw, 3.4rem);
+  line-height: 1.2;
+  color: var(--iv-gold);
+  border-bottom: 1px solid var(--iv-gold-pale);
+  overflow-wrap: anywhere;
+}
+
+/* Date block styled like the printed card */
+.iv-datecard {
+  --dc-ink: var(--iv-gold-deep);
+  --dc-rule: var(--iv-gold-soft);
+  --dc-day: var(--iv-gold);
+  --dc-soft: var(--iv-muted);
+  margin: 26px auto 0;
+  max-width: 460px;
+  color: var(--dc-ink);
+  font-family: var(--font-caps), serif;
+  text-transform: uppercase;
+  text-align: center;
+}
+.iv-dc-month,
+.iv-dc-year {
+  font-size: clamp(0.95rem, 4vw, 1.15rem);
+  letter-spacing: 0.06em;
+}
+.iv-dc-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  margin: 2px 0 4px;
+}
+.iv-dc-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 52px;
+  padding: 6px 2px;
+  border-top: 1.5px solid var(--dc-rule);
+  border-bottom: 1.5px solid var(--dc-rule);
+  font-size: clamp(0.8rem, 3.6vw, 1rem);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+.iv-dc-time {
+  font-size: clamp(0.7rem, 3vw, 0.85rem);
+}
+.iv-dc-time small {
+  font-size: 1em;
+}
+.iv-dc-day {
+  font-size: clamp(3rem, 15vw, 4.2rem);
+  line-height: 1;
+}
+.iv-dc-venue {
+  font-size: clamp(0.85rem, 3.8vw, 1.05rem);
+  letter-spacing: 0.05em;
+  margin-top: 10px;
+}
+.iv-dc-year + .iv-dc-venue {
+  margin-top: 18px;
+}
+
+/* Countdown heading */
+.iv-forever {
+  font-weight: 400;
+  font-size: 3.75rem;
+  line-height: 1;
+  color: var(--iv-gold);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7), 0 2px 10px rgba(138, 106, 46, 0.15);
+  margin-bottom: 0.75rem;
+}
+
+/* Venue: photo card + "Location" details box */
+.iv-venue-card {
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 18px;
+  border-radius: 28px;
+  background: var(--iv-cream);
+  box-shadow: 0 20px 40px -18px rgba(90, 64, 20, 0.3);
+}
+.iv-venue-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 14px;
+}
+.iv-loc {
+  margin-top: 18px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 14px -6px rgba(0, 0, 0, 0.15);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.iv-loc-head {
+  padding: 12px;
+  background: var(--iv-tint);
+  color: var(--iv-gold-deep);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+.iv-loc-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 18px 12px 20px;
+}
+.iv-loc-hotel {
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--iv-ink);
+}
+.iv-loc-line {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--iv-muted);
+}
+.iv-loc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--iv-tint);
+  color: var(--iv-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.iv-loc-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Guest book card */
+.iv-guestbook {
+  max-width: 384px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--iv-line);
+  border-radius: 2.5rem;
+  background: #fff;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.iv-gb-tag {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 60%;
+  margin: 16px auto 24px;
+}
+.iv-gb-tag span {
+  flex: 1;
+  height: 1px;
+  background: var(--iv-line);
+}
+.iv-gb-tag p {
+  font-family: var(--font-serif), serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--iv-ink);
+  white-space: nowrap;
+}
+.iv-gb-title {
+  font-weight: 400;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--iv-gold);
+  margin-bottom: 24px;
+}
+.iv-gb-intro {
+  font-family: var(--font-serif), serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--iv-ink);
+  margin-bottom: 32px;
+}
+.iv-gb-form {
+  width: 100%;
+  padding: 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.iv-gb-form input,
+.iv-gb-form textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--iv-line);
+  border-radius: 12px;
+  background: var(--iv-bg);
+  color: var(--iv-ink);
+  font-family: var(--font-serif), serif;
+  font-size: 1rem;
+  outline: none;
+}
+.iv-gb-form textarea {
+  resize: none;
+}
+.iv-gb-form input:focus,
+.iv-gb-form textarea:focus {
+  border-color: var(--iv-gold);
+  box-shadow: 0 0 0 1px var(--iv-gold-soft);
+}
+.iv-gb-form button {
+  margin-top: 8px;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--iv-gold-soft), var(--iv-gold-deep));
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s;
+}
+.iv-gb-form button:hover {
+  background: var(--iv-gold-deep);
+}
+@media (min-width: 768px) {
+  .iv-guestbook {
+    padding: 40px;
+  }
+  .iv-gb-tag {
+    margin-top: 0;
+  }
+}
+.iv-dc-day {
+  color: var(--dc-day);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.iv-dc-time small {
+  color: var(--dc-soft);
+}
+.iv-dc-venue {
+  color: var(--dc-soft);
 }

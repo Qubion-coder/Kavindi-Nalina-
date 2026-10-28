@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Pinyon_Script, Playball, Poppins } from "next/font/google";
+import { Great_Vibes, Pinyon_Script, Playball, Poppins } from "next/font/google";
 import { invite, intlPhone } from "../invite";
 import { ivory } from "./ivory";
 import { Flourish, PinIcon } from "../components/Ornaments";
@@ -15,15 +15,20 @@ const cursive = Pinyon_Script({ weight: "400", subsets: ["latin"], variable: "--
 // Rounder script used for the bride and groom cards
 const playball = Playball({ weight: "400", subsets: ["latin"] });
 
+// Calligraphic script for the couple's names (hero and parent cards)
+
 // Clean sans-serif for the order-of-the-day timeline
 const sans = Poppins({ weight: ["400", "500", "600"], subsets: ["latin"] });
 
 // Background song lives at public/song.mp3; NEXT_PUBLIC_MUSIC_SRC in .env.local can override it
 const musicSrc = encodeURI(process.env.NEXT_PUBLIC_MUSIC_SRC || "/song.mp3");
 
+// Great Vibes for the countdown heading
+const greatVibes = Great_Vibes({ weight: "400", subsets: ["latin"] });
+
 const monogram = `${invite.bride[0]}&${invite.groom[0]}`;
 
-export default function IvorySeal() {
+export default function IvorySeal({ guest = "" }: { guest?: string }) {
   const [stage, setStage] = useState<Stage>("sealed");
   const [videoFailed, setVideoFailed] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -39,7 +44,7 @@ export default function IvorySeal() {
     if (!a) return;
     // Mobile browsers may drop a failed preload; reload before trying again
     if (a.error || a.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) a.load();
-    if (!musicStarted.current) a.currentTime = 0;
+    if (!musicStarted.current) a.currentTime = ivory.musicStartAt;
     a.play()
       .then(() => {
         musicStarted.current = true;
@@ -94,7 +99,17 @@ export default function IvorySeal() {
   return (
     <div className={`iv ${cursive.variable}`}>
       {/* Background song: public/song.mp3, or a local-only file set in .env.local */}
-      <audio ref={audioRef} src={musicSrc} loop preload="auto" autoPlay />
+      {/* Loops by hand so each repeat also skips the intro seconds */}
+      <audio
+        ref={audioRef}
+        src={musicSrc}
+        preload="auto"
+        autoPlay
+        onEnded={(e) => {
+          e.currentTarget.currentTime = ivory.musicStartAt;
+          e.currentTarget.play().catch(() => setPlaying(false));
+        }}
+      />
 
       {stage !== "open" &&
         (videoFailed ? (
@@ -117,6 +132,7 @@ export default function IvorySeal() {
       <Nav />
       <main className={`iv-main ${stage !== "sealed" ? "is-visible" : ""}`}>
         <Hero />
+        <Welcome guest={guest} />
         <Hosts />
         <Countdown />
         <Celebration />
@@ -163,12 +179,9 @@ function IntroVideo({
     const v = videoRef.current;
     if (!v || playing) return;
     onStart();
-    v.muted = false;
-    v.play().catch(() => {
-      // Sound blocked: retry muted, otherwise skip straight to the card
-      v.muted = true;
-      v.play().catch(onEnd);
-    });
+    // Animation only: the background song is the sole audio
+    v.muted = true;
+    v.play().catch(onEnd);
   };
 
   // Fade out just before the last frame so the page appears underneath
@@ -192,6 +205,7 @@ function IntroVideo({
         src="/ivory-glow-envelope.mp4"
         poster="/ivory-glow-envelope-poster.jpg"
         playsInline
+        muted
         preload="auto"
         onTimeUpdate={onTime}
         onEnded={onEnd}
@@ -322,7 +336,6 @@ function Heading({ title, sub }: { title: string; sub?: string }) {
 
 // Full-screen video backdrop with just the names, a tagline and the date
 function Hero() {
-  const d = invite.dateDisplay;
   return (
     <section id="home" className="iv-hero">
       <div className="iv-hero-frame">
@@ -338,7 +351,7 @@ function Hero() {
           aria-hidden
         />
         <div className="iv-hero-text">
-          <p className="caps iv-hero-tag">We&apos;re getting married</p>
+          <p className="script iv-hero-tag">We are getting married</p>
           <h1 className="script iv-hero-names">
             {invite.bride} &amp; {invite.groom}
           </h1>
@@ -347,9 +360,6 @@ function Hero() {
             <i />
             <span />
           </span>
-          <p className="caps iv-hero-date">
-            {d.day} · {d.month} · {d.year}
-          </p>
         </div>
       </div>
     </section>
@@ -357,8 +367,52 @@ function Hero() {
 }
 
 // Bride and groom cards with their parents, joined by a round "&" badge
-function Hosts() {
+// Personal invitation line; the name comes from the /admin link, "you" without one
+function Welcome({ guest }: { guest: string }) {
+  return (
+    <section className="iv-section iv-welcome">
+      <Reveal>
+        <p className="serif-italic iv-welcome-line">Together with our families</p>
+        <p className="serif-italic iv-welcome-line">We take the pleasure in inviting</p>
+      </Reveal>
+      <Reveal delay={200}>
+        <p className="script iv-welcome-guest">{guest || "you"}</p>
+      </Reveal>
+      <Reveal delay={400}>
+        <p className="serif-italic iv-welcome-line">To celebrate our wedding</p>
+      </Reveal>
+      <Reveal delay={600}>
+        <DateCard />
+      </Reveal>
+    </section>
+  );
+}
+
+// Printed-card style date: month / weekday | 17 | time / year, then the venue
+function DateCard() {
   const d = invite.dateDisplay;
+  const [time, onwards] = invite.timeDisplay.split(" onwards");
+  return (
+    <div className="iv-datecard">
+      <p className="iv-dc-month">{d.month}</p>
+      <div className="iv-dc-row">
+        <span className="iv-dc-side">{d.weekday}</span>
+        <span className="iv-dc-day">{d.day}</span>
+        <span className="iv-dc-side iv-dc-time">
+          {time}
+          {onwards !== undefined && <small>Onwards</small>}
+        </span>
+      </div>
+      <p className="iv-dc-year">{d.year}</p>
+      <p className="iv-dc-venue">At {ivory.venue.hall}</p>
+      <p className="iv-dc-venue">
+        {ivory.venue.hotel}, {ivory.venue.city}
+      </p>
+    </div>
+  );
+}
+
+function Hosts() {
   const people = [
     { role: "Beloved daughter of", parents: invite.brideParents, name: invite.bride },
     { role: "Beloved son of", parents: invite.groomParents, name: invite.groom },
@@ -386,18 +440,6 @@ function Hosts() {
           </Fragment>
         ))}
       </div>
-      <Reveal delay={300}>
-        <p className="serif-italic iv-lede">
-          {invite.invitationLine} to celebrate the marriage of their beloved children
-        </p>
-        <Flourish className="iv-flourish" />
-        <p className="caps iv-date">
-          {d.weekday} · {d.day} {d.month} {d.year}
-        </p>
-        <p className="serif-italic">
-          {invite.timeDisplay} · {ivory.venue.hotel}, {ivory.venue.city}
-        </p>
-      </Reveal>
     </section>
   );
 }
@@ -424,10 +466,9 @@ function Countdown() {
     <section className="iv-section iv-tinted iv-has-floral">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className="iv-floral" src="/countdown-floral.webp" alt="" aria-hidden />
-      <Heading
-        title="Save the Date"
-        sub={`We are getting married · ${invite.dateDisplay.day} ${invite.dateDisplay.month} ${invite.dateDisplay.year}`}
-      />
+      <Reveal>
+        <h2 className={`iv-forever ${greatVibes.className}`}>Forever Begins In</h2>
+      </Reveal>
       <Reveal delay={150}>
         <div className="iv-countdown">
           {parts.map(([label, v]) => (
@@ -441,11 +482,8 @@ function Countdown() {
       <Reveal delay={300}>
         <div className="iv-cal-btns">
           <a className="iv-btn iv-btn-solid" href={calendarUrl()} target="_blank" rel="noopener noreferrer">
-            <CalendarIcon /> Google Calendar
+            <CalendarIcon /> Add to calendar
           </a>
-          <button type="button" className="iv-btn" onClick={downloadIcs}>
-            <CalendarIcon /> Apple / Outlook
-          </button>
         </div>
       </Reveal>
     </section>
@@ -473,32 +511,6 @@ function calendarUrl() {
     location: `${invite.venue.name}, ${invite.venue.place}`,
   });
   return `https://calendar.google.com/calendar/render?${q}`;
-}
-
-// .ics file for Apple Calendar, Outlook and most phone calendars
-function downloadIcs() {
-  const fmt = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-  const ics = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Kavindi & Nalina//Wedding//EN",
-    "BEGIN:VEVENT",
-    `UID:${fmt(invite.dateISO)}-kavindi-nalina@wedding`,
-    `DTSTAMP:${fmt(new Date().toISOString())}`,
-    `DTSTART:${fmt(invite.dateISO)}`,
-    `DTEND:${fmt(ivory.endISO)}`,
-    `SUMMARY:${invite.bride} & ${invite.groom} — Wedding`,
-    // Commas must be escaped in iCalendar text values
-    `LOCATION:${`${invite.venue.name}, ${invite.venue.place}`.replace(/,/g, "\\,")}`,
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].join("\r\n");
-  const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "kavindi-nalina-wedding.ics";
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 type TimelineIconName = (typeof ivory.events)[number]["icon"];
@@ -552,9 +564,6 @@ function Celebration() {
       <Reveal delay={150}>
         {/* Gold arch card; events alternate left and right of a dotted centre line */}
         <div className={`iv-schedule ${sans.className}`}>
-          <p className="iv-sched-head">
-            {invite.dateDisplay.weekday} · {ivory.venue.hotel}
-          </p>
           <ol>
             {ivory.events.map((e, i) => (
               <li key={e.time} className={i % 2 ? "is-right" : "is-left"}>
@@ -571,32 +580,30 @@ function Celebration() {
           </ol>
         </div>
       </Reveal>
-      <Reveal delay={300}>
-        <a className="iv-btn" href={calendarUrl()} target="_blank" rel="noopener noreferrer">
-          Add to calendar
-        </a>
-      </Reveal>
     </section>
   );
 }
 
+// Hotel photo on top, then a "Location" box with the details and a maps button
 function Venue() {
   return (
     <section id="location" className="iv-section iv-tinted">
       <Heading title="The Venue" />
       <Reveal delay={150}>
-        <div className="iv-card iv-venue">
-          <span className="iv-venue-watermark" aria-hidden />
-          <span className="iv-pin">
-            <PinIcon />
-          </span>
-          <h3 className="iv-venue-hotel">{ivory.venue.hotel}</h3>
-          <p className="caps iv-venue-city">{ivory.venue.city}</p>
-          <span className="iv-person-rule" />
-          <p className="serif-italic iv-venue-hall">{ivory.venue.hall}</p>
-          <a className="iv-btn" href={invite.venue.mapsUrl} target="_blank" rel="noopener noreferrer">
-            Open in Maps
-          </a>
+        <div className="iv-venue-card">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="iv-venue-photo" src="/venue-hotel.jpg" alt={ivory.venue.hotel} loading="lazy" />
+          <div className="iv-loc">
+            <p className="iv-loc-head">Location</p>
+            <div className="iv-loc-body">
+              <h3 className="iv-loc-hotel">{ivory.venue.hotel}</h3>
+              <p className="iv-loc-line">{ivory.venue.city}</p>
+              <p className="iv-loc-line">{ivory.venue.hall}</p>
+              <a className="iv-loc-btn" href={invite.venue.mapsUrl} target="_blank" rel="noopener noreferrer">
+                <PinIcon /> Live Location
+              </a>
+            </div>
+          </div>
         </div>
       </Reveal>
     </section>
@@ -677,35 +684,37 @@ ${wish.trim()}
 
   return (
     <section id="wishes" className="iv-section">
-      <Heading title="Leave a Wish" sub="Share your love and blessings with us" />
-      <Reveal delay={150}>
-        <form className="iv-card iv-form" onSubmit={submit}>
-          <label className="caps small" htmlFor="iv-wish-name">
-            Your name
-          </label>
-          <input
-            id="iv-wish-name"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
-          />
-          <label className="caps small" htmlFor="iv-wish-text">
-            Your wish
-          </label>
-          <textarea
-            id="iv-wish-text"
-            required
-            rows={4}
-            maxLength={500}
-            value={wish}
-            onChange={(e) => setWish(e.target.value)}
-            placeholder="Write a few words for the couple…"
-          />
-          <button type="submit" className="iv-btn iv-btn-solid">
-            Send wishes
-          </button>
-        </form>
+      <Reveal>
+        <div className="iv-guestbook">
+          <div className="iv-gb-tag">
+            <span />
+            <p>Guest Book</p>
+            <span />
+          </div>
+          <h2 className={`iv-gb-title ${greatVibes.className}`}>Leave a Wish</h2>
+          <p className="iv-gb-intro">
+            We&apos;d love to hear from you! Please leave your wishes, advice, or a simple hello for us.
+          </p>
+          <form className="iv-gb-form" onSubmit={submit}>
+            <input
+              aria-label="Your name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your Name"
+            />
+            <textarea
+              aria-label="Your wish"
+              required
+              rows={4}
+              maxLength={500}
+              value={wish}
+              onChange={(e) => setWish(e.target.value)}
+              placeholder="Write your wishes for the couple..."
+            />
+            <button type="submit">Send Wishes</button>
+          </form>
+        </div>
       </Reveal>
     </section>
   );
