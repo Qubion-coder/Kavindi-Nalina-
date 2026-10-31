@@ -389,7 +389,7 @@
 /* Text sits in the sky, inside the painted frame */
 .iv-hero-text {
   position: absolute;
-  top: 13%;
+  top: 7%;
   left: 12%;
   right: 12%;
   display: flex;
@@ -407,28 +407,10 @@
   white-space: nowrap;
 }
 .iv-hero-tag {
-  margin-top: 10px;
+  margin-top: 0;
   font-weight: 400;
   font-size: clamp(1.7rem, 7.5vw, 2.1rem);
   line-height: 1.2;
-}
-.iv-hero-divider {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 16px 0;
-  opacity: 0.5;
-}
-.iv-hero-divider span {
-  width: 48px;
-  height: 1px;
-  background: currentColor;
-}
-.iv-hero-divider i {
-  width: 6px;
-  height: 6px;
-  background: currentColor;
-  transform: rotate(45deg);
 }
 
 /* Parents section: two white cards joined by a round "&" badge */
@@ -1202,4 +1184,199 @@
 }
 .iv-dc-venue {
   color: var(--dc-soft);
+}
+
+/* RSVP in the guest book card: segmented choice + guest stepper */
+.iv-rsvp-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--iv-line);
+  border-radius: 12px;
+  background: var(--iv-bg);
+}
+.iv-gb-form .iv-rsvp-choice button {
+  margin: 0;
+  padding: 10px 6px;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--iv-muted);
+  box-shadow: none;
+  font-family: var(--font-serif), serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.iv-gb-form .iv-rsvp-choice button:hover {
+  background: var(--iv-cream);
+}
+.iv-gb-form .iv-rsvp-choice button.is-on {
+  background: #fff;
+  color: var(--iv-gold-deep);
+  box-shadow: 0 2px 8px -2px rgba(138, 106, 46, 0.35);
+}
+.iv-rsvp-guests {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 8px 8px 16px;
+  border: 1px solid var(--iv-line);
+  border-radius: 12px;
+  background: var(--iv-bg);
+  font-family: var(--font-serif), serif;
+  color: var(--iv-ink);
+}
+.iv-rsvp-stepper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.iv-rsvp-stepper span {
+  min-width: 18px;
+  text-align: center;
+  font-size: 1.15rem;
+}
+.iv-gb-form .iv-rsvp-stepper button {
+  margin: 0;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--iv-gold-soft);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--iv-gold-deep);
+  box-shadow: none;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.iv-gb-form .iv-rsvp-stepper button:hover {
+  background: var(--iv-cream);
+}
+
+/* Hero names: spaced "&", and on phones a bigger stacked name that glows off the sky */
+.iv-hero-names {
+  margin-top: 6px;
+}
+.iv-hero-amp {
+  margin: 0 0.25em;
+}
+@media (max-width: 720px) {
+  .iv-hero-text {
+    left: 6%;
+    right: 6%;
+  }
+  .iv-hero-names {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: clamp(3.2rem, 16vw, 4rem);
+    line-height: 1.05;
+    color: var(--iv-gold-deep);
+    text-shadow:
+      0 1px 2px rgba(60, 35, 0, 0.3),
+      0 0 18px rgba(255, 250, 235, 0.95),
+      0 0 32px rgba(255, 245, 220, 0.7);
+  }
+  .iv-hero-amp {
+    margin: -0.05em 0;
+    font-size: 0.6em;
+    color: var(--iv-gold);
+  }
+}
+
+/* Parisienne runs smaller than Great Vibes at the same size */
+.iv-rsvp-title {
+  font-size: 2.6rem;
+  line-height: 1.15;
+}
+
+/* "The Celebration" heading a size up from the other section titles */
+#details .iv-heading h2 {
+  font-size: clamp(3.2rem, 12.5vw, 4.4rem);
+}
+
+/* Tagline in soft black so the gold names are the clear highlight */
+.iv-hero-tag {
+  color: #2a2420;
+  text-shadow: 0 0 10px rgba(255, 250, 235, 0.8);
+}
+
+/* Parent cards: leaf shape (two rounded corners) with an inner outline; the groom's is mirrored */
+.iv-person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 56px 24px;
+  border: 1px solid rgba(227, 215, 193, 0.6);
+  border-radius: 100px 0 100px 0;
+  background: #fff;
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.1);
+}
+.iv-person.is-groom {
+  border-radius: 0 100px 0 100px;
+  background: #fff;
+}
+.iv-person-frame {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(220, 199, 151, 0.5);
+  border-radius: 90px 0 90px 0;
+  pointer-events: none;
+}
+.is-groom .iv-person-frame {
+  border-radius: 0 90px 0 90px;
+}
+.iv-person-role {
+  margin-bottom: 8px;
+  font-size: 7px;
+  letter-spacing: 0.4em;
+  color: var(--iv-muted);
+}
+.iv-person-parents {
+  font-family: var(--font-caps), serif;
+  font-size: 0.75rem;
+  line-height: 1.65;
+  letter-spacing: 0.025em;
+  text-transform: none;
+  color: var(--iv-muted);
+}
+.iv-person-name {
+  margin-top: 16px;
+  padding-top: 24px;
+  font-size: 3rem;
+  color: var(--iv-gold-deep);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.iv-person:hover .iv-person-name {
+  transform: scale(1.1);
+}
+@media (min-width: 768px) {
+  .iv-person {
+    padding: 88px 40px;
+    border-radius: 130px 0 130px 0;
+  }
+  .iv-person.is-groom {
+    border-radius: 0 130px 0 130px;
+  }
+  .iv-person-frame {
+    border-radius: 120px 0 120px 0;
+  }
+  .is-groom .iv-person-frame {
+    border-radius: 0 120px 0 120px;
+  }
+  .iv-person-role {
+    font-size: 8px;
+  }
+  .iv-person-parents {
+    font-size: 0.875rem;
+  }
+  .iv-person-name {
+    font-size: 4.5rem;
+  }
 }

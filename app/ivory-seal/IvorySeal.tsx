@@ -132,11 +132,11 @@ export default function IvorySeal({ guest = "" }: { guest?: string }) {
       <Nav />
       <main className={`iv-main ${stage !== "sealed" ? "is-visible" : ""}`}>
         <Hero />
-        <Welcome guest={guest} />
         <Hosts />
+        <Welcome guest={guest} />
         <Countdown />
-        <Celebration />
         <Venue />
+        <Celebration />
         <Rsvp />
         <Wishes />
         <Footer />
@@ -289,10 +289,10 @@ function SealDisc() {
 
 const links = [
   ["home", "Home"],
+  ["location", "Location"],
   ["details", "Details"],
   ["rsvp", "RSVP"],
   ["wishes", "Wishes"],
-  ["location", "Location"],
 ] as const;
 
 function Nav() {
@@ -353,13 +353,10 @@ function Hero() {
         <div className="iv-hero-text">
           <p className="script iv-hero-tag">We are getting married</p>
           <h1 className="script iv-hero-names">
-            {invite.bride} &amp; {invite.groom}
+            <span>{invite.bride}</span>
+            <span className="iv-hero-amp">&amp;</span>
+            <span>{invite.groom}</span>
           </h1>
-          <span className="iv-hero-divider" aria-hidden>
-            <span />
-            <i />
-            <span />
-          </span>
         </div>
       </div>
     </section>
@@ -431,9 +428,17 @@ function Hosts() {
             )}
             <Reveal delay={i * 200}>
               <div className={`iv-person ${i === 1 ? "is-groom" : ""}`}>
+                <span className="iv-person-frame" aria-hidden />
                 <p className="iv-person-role">{p.role}</p>
-                <span className="iv-person-rule" />
-                <p className="caps iv-person-parents">{p.parents}</p>
+                {/* Each parent on their own line, split at the "&" */}
+                <p className="iv-person-parents">
+                  {p.parents.split(" & ").map((line, j) => (
+                    <Fragment key={j}>
+                      {j > 0 && <br />}
+                      {j > 0 ? `& ${line}` : line}
+                    </Fragment>
+                  ))}
+                </p>
                 <h2 className={`iv-person-name ${playball.className}`}>{p.name}</h2>
               </div>
             </Reveal>
@@ -627,40 +632,61 @@ function Rsvp() {
 
   return (
     <section id="rsvp" className="iv-section">
-      <Heading title="RSVP" sub={`Kindly reply by ${ivory.rsvpBy}`} />
-      <Reveal delay={150}>
-        <form className="iv-card iv-form" onSubmit={submit}>
-          <label className="caps small" htmlFor="iv-name">
-            Full name
-          </label>
-          <input id="iv-name" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
-
-          <div className="iv-choice" role="radiogroup" aria-label="Attendance">
-            <button type="button" className={attending ? "is-on" : ""} onClick={() => setAttending(true)} aria-pressed={attending}>
-              Joyfully accept
-            </button>
-            <button type="button" className={!attending ? "is-on" : ""} onClick={() => setAttending(false)} aria-pressed={!attending}>
-              Regretfully decline
-            </button>
+      <Reveal>
+        <div className="iv-guestbook">
+          <div className="iv-gb-tag">
+            <span />
+            <p>RSVP</p>
+            <span />
           </div>
+          <h2 className="script iv-gb-title iv-rsvp-title">Will You Join Us?</h2>
+          <p className="iv-gb-intro">Kindly reply by {ivory.rsvpBy}</p>
+          <form className="iv-gb-form" onSubmit={submit}>
+            <input
+              aria-label="Full name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+            />
 
-          {attending && (
-            <div className="iv-stepper">
-              <span className="caps small">Guests</span>
-              <button type="button" onClick={() => setGuests(Math.max(1, guests - 1))} aria-label="Fewer guests">
-                −
+            <div className="iv-rsvp-choice" role="radiogroup" aria-label="Attendance">
+              <button
+                type="button"
+                className={attending ? "is-on" : ""}
+                onClick={() => setAttending(true)}
+                aria-pressed={attending}
+              >
+                Joyfully accept
               </button>
-              <span className="iv-stepper-num">{guests}</span>
-              <button type="button" onClick={() => setGuests(Math.min(10, guests + 1))} aria-label="More guests">
-                +
+              <button
+                type="button"
+                className={!attending ? "is-on" : ""}
+                onClick={() => setAttending(false)}
+                aria-pressed={!attending}
+              >
+                Regretfully decline
               </button>
             </div>
-          )}
 
-          <button type="submit" className="iv-btn iv-btn-solid">
-            Send reply
-          </button>
-        </form>
+            {attending && (
+              <div className="iv-rsvp-guests">
+                <span>Guests</span>
+                <div className="iv-rsvp-stepper">
+                  <button type="button" onClick={() => setGuests(Math.max(1, guests - 1))} aria-label="Fewer guests">
+                    −
+                  </button>
+                  <span>{guests}</span>
+                  <button type="button" onClick={() => setGuests(Math.min(10, guests + 1))} aria-label="More guests">
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <button type="submit">Send reply</button>
+          </form>
+        </div>
       </Reveal>
     </section>
   );
