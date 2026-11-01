@@ -13,12 +13,22 @@ const serif = Cormorant_Garamond({
 const caps = Cinzel({ weight: ["400", "500"], subsets: ["latin"], variable: "--font-caps" });
 
 export const metadata: Metadata = {
+  // Lets the share image resolve to a full URL in link previews
+  metadataBase: new URL("https://kavindi-nalina-weddinginvitation.vercel.app"),
   title: "Kavindi & Nalina — Wedding Invitation",
   description: "Thursday, 17 December 2026 · Sangam Banquet Hall, ITC Ratnadipa, Colombo",
   openGraph: {
     title: "Kavindi & Nalina — Wedding Invitation",
     description: "Thursday, 17 December 2026 · Sangam Banquet Hall, ITC Ratnadipa, Colombo",
     type: "website",
+    url: "/",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 1200, alt: "Kavindi & Nalina — Wedding Invitation" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kavindi & Nalina — Wedding Invitation",
+    description: "Thursday, 17 December 2026 · Sangam Banquet Hall, ITC Ratnadipa, Colombo",
+    images: ["/og-image.jpg"],
   },
 };
 
