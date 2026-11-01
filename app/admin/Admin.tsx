@@ -10,15 +10,15 @@ function buildMessage(display: string, link: string) {
 
 With great joy and heartfelt pleasure, we cordially invite you to grace us with your presence as we celebrate the beginning of our forever.
 
-It would be our greatest honour to have you in this cherished occasion.
+It would be our greatest honour to have you join us on this cherished occasion.
 
-Kindly explore the link below for the wedding invitation and celebration details.
+Kindly explore the link below for our wedding invitation and details of the celebration.
 
 ${link}
 
 Your presence would be the most treasured addition to our special day.
 
-With love ,
+With love,
 ${invite.groom} & ${invite.bride} ❤️`;
 }
 
