@@ -1380,3 +1380,17 @@
     font-size: 4.5rem;
   }
 }
+
+/* Status line under the RSVP / wish buttons */
+.iv-gb-status {
+  font-family: var(--font-serif), serif;
+  font-size: 1rem;
+  color: var(--iv-gold-deep);
+}
+.iv-gb-status.is-error {
+  color: #9a3b2e;
+}
+.iv-gb-form button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}

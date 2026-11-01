@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Great_Vibes, Pinyon_Script, Playball, Poppins } from "next/font/google";
-import { invite, intlPhone } from "../invite";
+import { invite } from "../invite";
 import { ivory } from "./ivory";
 import { Flourish, PinIcon } from "../components/Ornaments";
 import "./ivory.css";
@@ -138,7 +138,7 @@ export default function IvorySeal({ guest = "" }: { guest?: string }) {
         <Venue />
         <Celebration />
         <Rsvp guest={guest} />
-        <Wishes />
+        <Wishes guest={guest} />
         <Footer />
       </main>
 
@@ -616,19 +616,36 @@ function Venue() {
 }
 
 // No backend: the reply is sent as a pre-filled WhatsApp message to the first contact
+type SendState = "idle" | "sending" | "sent" | "error";
+
+// Saves an RSVP or wish to the Google Sheet through the site's /api/submit route
+async function saveToSheet(body: Record<string, unknown>) {
+  const res = await fetch("/api/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = (await res.json().catch(() => null)) as { ok?: boolean } | null;
+  if (!res.ok || !data?.ok) throw new Error("save failed");
+}
+
 // Opened from a guest link, the name field starts filled with that guest's name
 function Rsvp({ guest }: { guest: string }) {
   const [name, setName] = useState(guest);
   const [attending, setAttending] = useState(true);
   const [guests, setGuests] = useState(1);
 
-  const submit = (e: React.FormEvent) => {
+  const [state, setState] = useState<SendState>("idle");
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const msg = attending
-      ? `Hi! This is ${name}. We'd love to attend your wedding — ${guests} guest${guests > 1 ? "s" : ""}.`
-      : `Hi! This is ${name}. Sadly we won't be able to attend, but we send our love.`;
-    const to = intlPhone(invite.rsvp.contacts[0].phone);
-    window.open(`https://wa.me/${to}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+    setState("sending");
+    try {
+      await saveToSheet({ type: "rsvp", name, attending, guests });
+      setState("sent");
+    } catch {
+      setState("error");
+    }
   };
 
   return (
@@ -685,7 +702,11 @@ function Rsvp({ guest }: { guest: string }) {
               </div>
             )}
 
-            <button type="submit">Send reply</button>
+            <button type="submit" disabled={state === "sending" || state === "sent"}>
+              {state === "sending" ? "Sending…" : state === "sent" ? "Reply sent" : "Send reply"}
+            </button>
+            {state === "sent" && <p className="iv-gb-status">Thank you! Your reply has been received.</p>}
+            {state === "error" && <p className="iv-gb-status is-error">Sorry, that didn't go through. Please try again.</p>}
           </form>
         </div>
       </Reveal>
@@ -694,19 +715,23 @@ function Rsvp({ guest }: { guest: string }) {
 }
 
 // Like the RSVP, wishes go out as a pre-filled WhatsApp message to the first contact
-function Wishes() {
-  const [name, setName] = useState("");
+// Like the RSVP, the name starts filled with the guest's name on personal links
+function Wishes({ guest }: { guest: string }) {
+  const [name, setName] = useState(guest);
   const [wish, setWish] = useState("");
 
-  const submit = (e: React.FormEvent) => {
+  const [state, setState] = useState<SendState>("idle");
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const msg = `A wish for ${invite.bride} & ${invite.groom} 💌
-
-${wish.trim()}
-
-— ${name.trim()}`;
-    const to = intlPhone(invite.rsvp.contacts[0].phone);
-    window.open(`https://wa.me/${to}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+    setState("sending");
+    try {
+      await saveToSheet({ type: "wish", name, wish });
+      setState("sent");
+      setWish("");
+    } catch {
+      setState("error");
+    }
   };
 
   return (
@@ -739,7 +764,11 @@ ${wish.trim()}
               onChange={(e) => setWish(e.target.value)}
               placeholder="Write your wishes for the couple..."
             />
-            <button type="submit">Send Wishes</button>
+            <button type="submit" disabled={state === "sending"}>
+              {state === "sending" ? "Sending…" : "Send Wishes"}
+            </button>
+            {state === "sent" && <p className="iv-gb-status">Thank you for your lovely wishes!</p>}
+            {state === "error" && <p className="iv-gb-status is-error">Sorry, that didn't go through. Please try again.</p>}
           </form>
         </div>
       </Reveal>
