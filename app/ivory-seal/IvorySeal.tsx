@@ -137,7 +137,7 @@ export default function IvorySeal({ guest = "" }: { guest?: string }) {
         <Countdown />
         <Venue />
         <Celebration />
-        <Rsvp />
+        <Rsvp guest={guest} />
         <Wishes />
         <Footer />
       </main>
@@ -616,8 +616,9 @@ function Venue() {
 }
 
 // No backend: the reply is sent as a pre-filled WhatsApp message to the first contact
-function Rsvp() {
-  const [name, setName] = useState("");
+// Opened from a guest link, the name field starts filled with that guest's name
+function Rsvp({ guest }: { guest: string }) {
+  const [name, setName] = useState(guest);
   const [attending, setAttending] = useState(true);
   const [guests, setGuests] = useState(1);
 

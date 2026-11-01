@@ -1,6 +1,6 @@
 // Guest naming rules shared by the /admin link generator and the personalised invitation.
 
-export const prefixes = ["Mr.", "Mrs.", "Miss", "Mr. & Mrs.", "Family", "Dear"] as const;
+export const prefixes = ["Mr.", "Mrs.", "Miss", "Dr.", "Mr. & Mrs.", "Family", "Dear"] as const;
 export type Prefix = (typeof prefixes)[number];
 
 // "Dear" is a greeting style, not part of the name, so it adds nothing here

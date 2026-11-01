@@ -6,18 +6,20 @@ import { displayName, guestPath, prefixes, type Prefix } from "../guest";
 import "./admin.css";
 
 function buildMessage(display: string, link: string) {
-  return `Dear ${display} ❤️
+  return `Dear ${display},
 
-With joyful hearts, we warmly invite you to celebrate one of the most special days of our lives as we begin our journey together.
+With great joy and heartfelt pleasure, we cordially invite you to grace us with your presence as we celebrate the beginning of our forever.
 
-Please view our wedding invitation and all the event details through the link below 🌐:
+It would be our greatest honour to have you in this cherished occasion.
+
+Kindly explore the link below for the wedding invitation and celebration details.
 
 ${link}
 
-Your presence would truly mean the world to us, and we would be honored to celebrate this beautiful moment together.
+Your presence would be the most treasured addition to our special day.
 
-With love,
-❤️ ${invite.groom} & ${invite.bride}`;
+With love ,
+${invite.groom} & ${invite.bride} ❤️`;
 }
 
 export default function Admin() {
@@ -80,7 +82,7 @@ export default function Admin() {
         {result && (
           <div className="ad-result">
             <p className="ad-label">Greeting</p>
-            <p className="ad-greeting">Dear {result.display} ❤️</p>
+            <p className="ad-greeting">Dear {result.display},</p>
             <p className="ad-label">Link</p>
             <a className="ad-link" href={result.link} target="_blank" rel="noopener noreferrer">
               {result.link}
